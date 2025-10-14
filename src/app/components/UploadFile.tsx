@@ -32,10 +32,9 @@ const UploadFile: FunctionComponent<UploadFileProps> = ({ setResult, setError })
         body: JSON.stringify({ imageUrl: url }),
       });
       const data = await analyzeRes.json();
+
       if (data?.error) {
-        setResult(null)
-        setError(data.error);
-        return
+        throw new Error('Error analyzing image')
       }
       const rawContent = data.choices?.[0]?.message?.content;
       const cleanedResult = rawContent
@@ -45,7 +44,6 @@ const UploadFile: FunctionComponent<UploadFileProps> = ({ setResult, setError })
 
       setResult(JSON.parse(cleanedResult ?? "{}"));
     } catch (err) {
-      console.error(err);
       setResult({ food: "Error analyzing image" });
     } finally {
       setLoading(false);
